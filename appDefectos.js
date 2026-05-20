@@ -2,20 +2,22 @@ let usuarios = JSON.parse(sessionStorage.getItem('usuarios') || '[]');
 let intentos = 1;
 
 /* 
-CASO 1: Registro con espacios en blanco no controlados
+CASO 1: Formularios de registro e inicio de sesión con espacios en blanco no controlados
 
 ERROR:
-El programador no consideró limpiar los campos de entrada del formulario de registro,
-es decir, no eliminó los espacios en blanco antes o después del correo y la contraseña.
+El programador no consideró que el usuario puede escribir espacios antes o después
+del correo y la contraseña, ya sea por equivocación o de manera intencional,
+tanto en el registro como en el inicio de sesión.
 
 DEFECTO:
-El correo y la contraseña se guardan directamente en el sistema sin aplicar una limpieza,
-como trim(), sobre los datos ingresados.
+El sistema guarda y compara las credenciales exactamente como fueron ingresadas,
+sin quitar los espacios en blanco con una función como trim().
 
 FALLO:
-Al ejecutar el sistema, el usuario puede registrarse con espacios ocultos al inicio o al final.
-Luego, cuando intenta iniciar sesión ingresando sus credenciales sin esos espacios,
-el sistema rechaza el acceso aunque estas parezcan correctas.
+Al ejecutar el sistema, el usuario puede ingresar espacios en blanco sin darse cuenta
+al registrarse o al iniciar sesión. Como el sistema no elimina esos espacios,
+las credenciales guardadas pueden no coincidir con las que el usuario escribe
+en el inicio de sesión, por lo que se rechaza el acceso aunque los datos parezcan correctos.
 */
 
 /* 
