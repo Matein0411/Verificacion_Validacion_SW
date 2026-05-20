@@ -2,7 +2,24 @@ let usuarios = JSON.parse(sessionStorage.getItem('usuarios') || '[]');
 let intentos = 1;
 
 /* 
-CASO 2: Expresión regular sin anclajes 
+CASO 1: Registro con espacios en blanco no controlados
+
+ERROR:
+El programador no consideró limpiar los campos de entrada del formulario de registro,
+es decir, no eliminó los espacios en blanco antes o después del correo y la contraseña.
+
+DEFECTO:
+El correo y la contraseña se guardan directamente en el sistema sin aplicar una limpieza,
+como trim(), sobre los datos ingresados.
+
+FALLO:
+Al ejecutar el sistema, el usuario puede registrarse con espacios ocultos al inicio o al final.
+Luego, cuando intenta iniciar sesión ingresando sus credenciales sin esos espacios,
+el sistema rechaza el acceso aunque estas parezcan correctas.
+*/
+
+/* 
+CASO 2: Expresión regular sin anclajes (Error catastrófico invisible)
 
 ERROR:
 El programador omitió los metacaracteres de anclaje de inicio (^) y fin ($) 
@@ -20,30 +37,15 @@ El sistema evaluará esto como `true` porque encuentra el patrón en medio, perm
 el registro de un correo completamente inválido que podría corromper la base de datos 
 o fallar en un módulo de notificaciones.
 */
+
+
 function validateEmail(email) {
-    // SIN ANCLAJES
-    const regexSinAnclajes = /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/;
-    return regexSinAnclajes.test(email);
+    const regex = /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/;
+    return regex.test(email);
 }
 
 document.getElementById('register-form').addEventListener('submit', function(e) {
     e.preventDefault();
-    /* 
-    CASO 1: Registro con espacios en blanco no controlados
-
-    ERROR:
-    El programador no consideró limpiar los campos de entrada del formulario de registro,
-    es decir, no eliminó los espacios en blanco antes o después del correo y la contraseña.
-
-    DEFECTO:
-    El correo y la contraseña se guardan directamente en el sistema sin aplicar una limpieza,
-    como trim(), sobre los datos ingresados.
-
-    FALLO:
-    Al ejecutar el sistema, el usuario puede registrarse con espacios ocultos al inicio o al final.
-    Luego, cuando intenta iniciar sesión ingresando sus credenciales sin esos espacios,
-    el sistema rechaza el acceso aunque estas parezcan correctas.
-    */
     const email = document.getElementById('reg-email').value;
     const password = document.getElementById('reg-password').value;
     const msgEl = document.getElementById('reg-msg');
@@ -53,7 +55,6 @@ document.getElementById('register-form').addEventListener('submit', function(e) 
         return;
     }
 
-    // Usamos la función defectuosa para validar el correo introducido
     if (!validateEmail(email)) {
         msgEl.innerText = "Formato de correo inválido.";
         msgEl.className = "msg";
@@ -65,13 +66,11 @@ document.getElementById('register-form').addEventListener('submit', function(e) 
     if (existe) {
         msgEl.innerText = "Credenciales ya registradas.";
         msgEl.className = "msg";
-    } else { // Se corrigió 'else is {' por 'else {'
+    } else { 
         usuarios.push({ email, password });
         msgEl.innerText = "Registro exitoso.";
         msgEl.className = "msg success";
         document.getElementById('register-form').reset();
-        // Convierte el array de usuarios a una cadena JSON y lo guarda en sessionStorage
-        // Esto asegura que los datos persistan después de recargar o cambiar de página
         sessionStorage.setItem('usuarios', JSON.stringify(usuarios));
     }
 });
