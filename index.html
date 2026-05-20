@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inicio de sesión</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="container">
+        <div class="form-section">
+            <h2>Iniciar sesión</h2>
+            <form id="login-form">
+                <div class="input-group">
+                    <label for="log-email">Correo:</label>
+                    <input type="text" id="log-email" required>
+                </div>
+                <div class="input-group">
+                    <label for="log-password">Contraseña:</label>
+                    <input type="password" id="log-password" required>
+                </div>
+                <button type="submit">Ingresar</button>
+            </form>
+            <p id="log-msg" class="msg"></p>
+            <p style="margin-top: 14px; text-align: center; font-size: 0.95rem;">
+                ¿No tienes cuenta? <a href="register.html">Registrarse</a>
+            </p>
+        </div>
+
+        <form id="register-form" hidden>
+            <div class="input-group">
+                <label for="reg-email">Correo:</label>
+                <input type="text" id="reg-email" required>
+            </div>
+            <div class="input-group">
+                <label for="reg-password">Contraseña:</label>
+                <input type="password" id="reg-password" required>
+            </div>
+            <button type="submit">Registrarse</button>
+            <p id="reg-msg" class="msg"></p>
+        </form>
+    </div>
+
+    <script src="appDefectos.js"></script>
+</body>
+
+</html>
