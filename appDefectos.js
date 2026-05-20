@@ -1,6 +1,30 @@
 let usuarios = JSON.parse(sessionStorage.getItem('usuarios') || '[]');
-
 let intentos = 1;
+
+/* 
+CASO 2: Expresión regular sin anclajes 
+
+ERROR:
+El programador omitió los metacaracteres de anclaje de inicio (^) y fin ($) 
+en la expresión regular utilizada para verificar el formato del correo.
+
+DEFECTO:
+La función validateEmail no comprueba que toda la cadena introducida sea un correo válido, 
+sino únicamente que la cadena *contenga* un fragmento con forma de correo en cualquier 
+parte de su extensión.
+
+FALLO:
+Al ejecutar el sistema, un usuario puede introducir cadenas maliciosas o con basura, 
+como por ejemplo "hola_esto_es_un_intento_de_inyeccion_usuario@dominio.com_texto_extra". 
+El sistema evaluará esto como `true` porque encuentra el patrón en medio, permitiendo 
+el registro de un correo completamente inválido que podría corromper la base de datos 
+o fallar en un módulo de notificaciones.
+*/
+function validateEmail(email) {
+    // SIN ANCLAJES
+    const regexSinAnclajes = /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/;
+    return regexSinAnclajes.test(email);
+}
 
 document.getElementById('register-form').addEventListener('submit', function(e) {
     e.preventDefault();
@@ -29,12 +53,19 @@ document.getElementById('register-form').addEventListener('submit', function(e) 
         return;
     }
 
+    // Usamos la función defectuosa para validar el correo introducido
+    if (!validateEmail(email)) {
+        msgEl.innerText = "Formato de correo inválido.";
+        msgEl.className = "msg";
+        return;
+    }
+
     const existe = usuarios.find(u => u.password === password);
 
     if (existe) {
         msgEl.innerText = "Credenciales ya registradas.";
         msgEl.className = "msg";
-    } else {
+    } else { // Se corrigió 'else is {' por 'else {'
         usuarios.push({ email, password });
         msgEl.innerText = "Registro exitoso.";
         msgEl.className = "msg success";
@@ -65,13 +96,13 @@ document.getElementById('login-form').addEventListener('submit', function(e) {
     if (usuarioValido) {
         msgEl.innerText = "Inicio de sesión exitoso. ¡Bienvenido!";
         msgEl.className = "msg success";
-        intentos = 1;
+        intentos = 1; // Resetea intentos tras éxito
     } else {
         intentos++;
         msgEl.innerText = `Credenciales incorrectas. (Intento ${intentos - 1})`;
         msgEl.className = "msg";
 
-        if (intentos >= 3) {
+        if (intentos > 3) {
             msgEl.innerText = "Cuenta bloqueada por exceso de intentos.";
         }
     }
