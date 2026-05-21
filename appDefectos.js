@@ -2,25 +2,6 @@ let usuarios = JSON.parse(sessionStorage.getItem('usuarios') || '[]');
 let intentos = 1;
 
 /* 
-CASO 1: Formularios de registro e inicio de sesión con espacios en blanco no controlados
-
-ERROR:
-El programador no consideró que el usuario puede escribir espacios antes o después
-del correo y la contraseña, ya sea por equivocación o de manera intencional,
-tanto en el registro como en el inicio de sesión.
-
-DEFECTO:
-El sistema guarda y compara las credenciales exactamente como fueron ingresadas,
-sin quitar los espacios en blanco con una función como trim().
-
-FALLO:
-Al ejecutar el sistema, el usuario puede ingresar espacios en blanco sin darse cuenta
-al registrarse o al iniciar sesión. Como el sistema no elimina esos espacios,
-las credenciales guardadas pueden no coincidir con las que el usuario escribe
-en el inicio de sesión, por lo que se rechaza el acceso aunque los datos parezcan correctos.
-*/
-
-/* 
 CASO 2: Expresión regular sin anclajes (Error catastrófico invisible)
 
 ERROR:
@@ -39,8 +20,6 @@ El sistema evaluará esto como `true` porque encuentra el patrón en medio, perm
 el registro de un correo completamente inválido que podría corromper la base de datos 
 o fallar en un módulo de notificaciones.
 */
-
-
 function validateEmail(email) {
     const regex = /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/;
     return regex.test(email);
@@ -48,6 +27,24 @@ function validateEmail(email) {
 
 document.getElementById('register-form').addEventListener('submit', function(e) {
     e.preventDefault();
+    /* 
+    CASO 1: Formularios de registro e inicio de sesión con espacios en blanco no controlados
+    
+    ERROR:
+    El programador no consideró que el usuario puede escribir espacios antes o después
+    del correo y la contraseña, ya sea por equivocación o de manera intencional,
+    tanto en el registro como en el inicio de sesión.
+    
+    DEFECTO:
+    El sistema guarda y compara las credenciales exactamente como fueron ingresadas,
+    sin quitar los espacios en blanco con una función como trim().
+    
+    FALLO:
+    Al ejecutar el sistema, el usuario puede ingresar espacios en blanco sin darse cuenta
+    al registrarse o al iniciar sesión. Como el sistema no elimina esos espacios,
+    las credenciales guardadas pueden no coincidir con las que el usuario escribe
+    en el inicio de sesión, por lo que se rechaza el acceso aunque los datos parezcan correctos.
+    */
     const email = document.getElementById('reg-email').value;
     const password = document.getElementById('reg-password').value;
     const msgEl = document.getElementById('reg-msg');
