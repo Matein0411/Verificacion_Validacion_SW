@@ -1,4 +1,18 @@
 let usuarios = JSON.parse(sessionStorage.getItem('usuarios') || '[]');
+/* 
+CASO 3: Contador mal inicializado
+
+ERROR:
+El programador inicializa la variable de intentos en 1 en lugar de 0.
+
+DEFECTO:
+El contador de intentos ya empieza consumido, por lo que el sistema reduce el numero
+real de intentos permitidos.
+
+FALLO:
+Al ejecutar el sistema, el usuario solo dispone de dos intentos reales antes del bloqueo,
+aunque el mensaje indica tres, lo que provoca bloqueos prematuros.
+*/
 let intentos = 1;
 
 /* 
@@ -47,7 +61,7 @@ document.getElementById('register-form').addEventListener('submit', function(e) 
     */
    const email = document.getElementById('reg-email').value;
    /* 
-   CASO 3: Sensibilidad a mayusculas en el correo
+    CASO 5: Sensibilidad a mayusculas en el correo
    
    ERROR:
    El programador no normaliza el correo (por ejemplo, convertirlo a minusculas) antes de
@@ -76,6 +90,20 @@ document.getElementById('register-form').addEventListener('submit', function(e) 
         return;
     }
 
+    /* 
+    CASO 4: Validacion de unicidad erronea
+    
+    ERROR:
+    El programador valida la existencia usando la contrasena en lugar del correo.
+    
+    DEFECTO:
+    El sistema considera duplicadas las credenciales solo si otra cuenta tiene la misma
+    contrasena, ignorando que el correo debe ser unico.
+    
+    FALLO:
+    Al ejecutar el sistema, se permite registrar el mismo correo varias veces con
+    contrasenas distintas, creando cuentas duplicadas y conflictos al iniciar sesion.
+    */
     const existe = usuarios.find(u => u.password === password);
 
     if (existe) {
