@@ -45,7 +45,23 @@ document.getElementById('register-form').addEventListener('submit', function(e) 
     las credenciales guardadas pueden no coincidir con las que el usuario escribe
     en el inicio de sesión, por lo que se rechaza el acceso aunque los datos parezcan correctos.
     */
-    const email = document.getElementById('reg-email').value;
+   const email = document.getElementById('reg-email').value;
+   /* 
+   CASO 3: Sensibilidad a mayusculas en el correo
+   
+   ERROR:
+   El programador no normaliza el correo (por ejemplo, convertirlo a minusculas) antes de
+   guardarlo o compararlo.
+   
+   DEFECTO:
+   El sistema trata como distintos los correos que solo cambian en mayusculas o minusculas,
+   por lo que "MiCorreo@..." y "micorreo@..." se almacenan como usuarios diferentes.
+   
+   FALLO:
+   Al ejecutar el sistema, un mismo usuario puede registrarse varias veces con el mismo
+   correo usando distinta capitalizacion y luego no poder iniciar sesion con la variante
+   esperada, generando duplicidad de cuentas y confusion en la gestion de usuarios.
+   */
     const password = document.getElementById('reg-password').value;
     const msgEl = document.getElementById('reg-msg');
 
